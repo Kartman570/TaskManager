@@ -29,12 +29,19 @@ RUN apt-get update -qq \
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
 ENV PATH="$PATH:/root/.local/bin"
-RUN poetry config virtualenvs.create false --local
+RUN poetry config virtualenvs.create false
 
 RUN mkdir -p /app
 WORKDIR /app
 
+
+COPY pyproject.toml poetry.lock ./
+RUN poetry install  --no-interaction --no-ansi
+ADD . /app
+ENV DJANGO_SETTINGS_MODULE="task_manager.settings"
+
+
 EXPOSE 8000
 
-CMD python manage.py runserver 0.0.0.0:8000
+CMD sleep 10 && python manage.py runserver 0.0.0.0:8000
 
