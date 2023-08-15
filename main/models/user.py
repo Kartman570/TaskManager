@@ -17,3 +17,5 @@ class User(AbstractUser):
     email = models.CharField(max_length=255)
     date_of_birth = models.DateTimeField(null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
+    
+    is_staff = models.BooleanField(default=False)
