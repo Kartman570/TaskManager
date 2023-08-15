@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from .models import User, Task, Tag
-from .serializer import UserSerializer, TaskSerializer, TagSerializer
+from .serializers import UserSerializer, TaskSerializer, TagSerializer
 import django_filters
 
 
