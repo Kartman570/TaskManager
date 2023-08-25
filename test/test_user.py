@@ -4,8 +4,10 @@ from http import HTTPStatus
 
 fake = Faker()
 
+
 class TestUserViewSet(TestViewSetBase):
     basename = "users"
+
     def generate_user_attributes(self):
         return {
             "username": fake.user_name(),
@@ -41,7 +43,7 @@ class TestUserViewSet(TestViewSetBase):
     def test_delete(self):
         user_attributes = self.generate_user_attributes()
         user = self.create(user_attributes)
-        
+
         response = self.delete(user["id"])
         expected_response = HTTPStatus.NO_CONTENT
         assert response == expected_response
@@ -52,10 +54,10 @@ class TestUserViewSet(TestViewSetBase):
             user_attributes = self.generate_user_attributes()
             user = self.create(user_attributes)
             users_list.append(user)
-        
+
         expected_response = users_list
         response = self.list()
-        response.pop(0)#removes pytest default user
+        response.pop(0)  # removes pytest default user
         assert response == expected_response
 
     def test_retrieve(self):
@@ -64,7 +66,7 @@ class TestUserViewSet(TestViewSetBase):
             user_attributes = self.generate_user_attributes()
             user = self.create(user_attributes)
             users_list.append(user)
-        
+
         expected_response = users_list[2]
-        response = self.retrieve(users_list[2]['id'])
+        response = self.retrieve(users_list[2]["id"])
         assert response == expected_response

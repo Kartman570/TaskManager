@@ -4,8 +4,10 @@ from http import HTTPStatus
 
 fake = Faker()
 
+
 class TestUserViewSet(TestViewSetBase):
     basename = "tags"
+
     def generate_tag_attributes(self):
         return {
             "name": fake.user_name(),
@@ -21,7 +23,6 @@ class TestUserViewSet(TestViewSetBase):
         expected_response = self.expected_details(tag, tag_attributes)
         assert tag == expected_response
 
-
     def test_update(self):
         tag_attributes = self.generate_tag_attributes()
         tag = self.create(tag_attributes)
@@ -35,7 +36,7 @@ class TestUserViewSet(TestViewSetBase):
     def test_delete(self):
         tag_attributes = self.generate_tag_attributes()
         tag = self.create(tag_attributes)
-        
+
         response = self.delete(tag["id"])
         expected_response = HTTPStatus.NO_CONTENT
         assert response == expected_response
@@ -46,7 +47,7 @@ class TestUserViewSet(TestViewSetBase):
             tag_attributes = self.generate_tag_attributes()
             tag = self.create(tag_attributes)
             tags_list.append(tag)
-        
+
         expected_response = tags_list
         response = self.list()
         assert response == expected_response
@@ -57,7 +58,7 @@ class TestUserViewSet(TestViewSetBase):
             tag_attributes = self.generate_tag_attributes()
             tag = self.create(tag_attributes)
             tags_list.append(tag)
-        
+
         expected_response = tags_list[2]
-        response = self.retrieve(tags_list[2]['id'])
+        response = self.retrieve(tags_list[2]["id"])
         assert response == expected_response

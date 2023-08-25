@@ -20,7 +20,6 @@ class TestViewSetBase(APITestCase):
         cls.user = cls.create_api_user()
         cls.user.is_staff = True
         cls.client = APIClient()
-        #cls.tag = cls.create_test_tag()
 
     @classmethod
     def create_api_user(cls):
