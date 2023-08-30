@@ -25,48 +25,49 @@ class TestUserViewSet(TestViewSetBase):
 
     def test_create(self):
         user_attributes = self.generate_user_attributes()
-        user = self.create(user_attributes)
+        response = self.create(user_attributes)
 
-        expected_response = self.expected_details(user, user_attributes)
-        assert user == expected_response
+        expected_response = self.expected_details(response.data, user_attributes)
+        assert response.data == expected_response
 
     def test_update(self):
         user_attributes = self.generate_user_attributes()
         user = self.create(user_attributes)
         new_data = self.generate_user_attributes()
-        updated_attributes = {**user, **new_data}
+        updated_attributes = {**user.data, **new_data}
 
-        expected_response = self.expected_details(user, updated_attributes)
-        response = self.update(new_data, user["id"])
-        assert response == expected_response
+        expected_response = self.expected_details(user.data, updated_attributes)
+        response = self.update(new_data, user.data["id"])
+        assert response.data == expected_response
 
     def test_delete(self):
         user_attributes = self.generate_user_attributes()
         user = self.create(user_attributes)
 
-        response = self.delete(user["id"])
-        expected_response = HTTPStatus.NO_CONTENT
-        assert response == expected_response
+        response = self.delete(user.data["id"])
+        assert response.status_code == HTTPStatus.NO_CONTENT
+        new_response = self.retrieve(user.data["id"])
+        assert new_response.status_code == HTTPStatus.NOT_FOUND
 
     def test_list(self):
         users_list = []
         for i in range(5):
             user_attributes = self.generate_user_attributes()
             user = self.create(user_attributes)
-            users_list.append(user)
+            users_list.append(user.data)
 
         expected_response = users_list
         response = self.list()
-        response.pop(0)  # removes pytest default user
-        assert response == expected_response
+        response.data.pop(0)  # removes pytest default user
+        assert response.data == expected_response
 
     def test_retrieve(self):
         users_list = []
         for i in range(5):
             user_attributes = self.generate_user_attributes()
             user = self.create(user_attributes)
-            users_list.append(user)
+            users_list.append(user.data)
 
         expected_response = users_list[2]
         response = self.retrieve(users_list[2]["id"])
-        assert response == expected_response
+        assert response.data == expected_response

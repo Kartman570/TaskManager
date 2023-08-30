@@ -31,8 +31,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    #queryset = Task.objects.select_related("tags", "author", "worker") #ПОЧЕМУ СЕЛЕКТ ОТДАЕТ ДАННЫЕ В ОБРАТНОМ ПОРЯДКЕ???
-    queryset = Task.objects.prefetch_related("tags", "author", "worker")#А ПРЕФЕТЧ ОТДАЕТ В ПРАВИЛЬНОМ ПОРЯДКЕ???
+    queryset = Task.objects.select_related("tags", "author", "worker").order_by("id")
     serializer_class = TaskSerializer
     permission_classes = [IsStaffOrReadOnly]
     filterset_class = TaskFilter

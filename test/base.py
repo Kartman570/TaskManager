@@ -40,29 +40,24 @@ class TestViewSetBase(APITestCase):
     def create(self, data: dict, args: List[Union[str, int]] = None) -> dict:
         self.client.force_login(self.user)
         response = self.client.post(self.list_url(args), data=data)
-        assert response.status_code == HTTPStatus.CREATED, response.content
-        return response.data
+        return response
 
     def update(self, data: dict, id: int = None) -> dict:
         self.client.force_authenticate(self.user)
         response = self.client.patch(self.detail_url(id), data=data)
-        assert response.status_code == HTTPStatus.OK, response.content
-        return response.data
+        return response
 
     def delete(self, id: int = None) -> dict:
         self.client.force_authenticate(self.user)
         response = self.client.delete(self.detail_url(id))
-        assert response.status_code == HTTPStatus.NO_CONTENT, response.content
-        return response.status_code
+        return response
 
     def list(self) -> dict:
         self.client.force_login(self.user)
         response = self.client.get(self.list_url())
-        assert response.status_code == HTTPStatus.OK, response.content
-        return response.data
+        return response
 
     def retrieve(self, id: int = None):
         self.client.force_login(self.user)
         response = self.client.get(self.detail_url(id))
-        assert response.status_code == HTTPStatus.OK, response.content
-        return response.data
+        return response

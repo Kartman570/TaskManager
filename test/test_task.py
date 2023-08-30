@@ -28,55 +28,58 @@ class TestTaskViewSet(TestViewSetBase):
 
     def test_create(self):
         task_attributes = self.generate_task_attributes()
-        task = self.create(task_attributes)
-        expected_response = self.expected_details(task, task_attributes)
+        response = self.create(task_attributes)
+        expected_response = self.expected_details(response.data, task_attributes)
 
-        now = datetime.now()  # check for AUTO date-time fields in models
-        created_date = datetime.fromisoformat(task["created_date"].replace("Z", ""))
-        changed_date = datetime.fromisoformat(task["changed_date"].replace("Z", ""))
-        assert now - timedelta(seconds=1) <= created_date <= now + timedelta(seconds=1)
-        assert now - timedelta(seconds=1) <= changed_date <= now + timedelta(seconds=1)
+        assert self.is_auto_date_time_correct(response.data["created_date"])
+        assert self.is_auto_date_time_correct(response.data["changed_date"])
 
-        del task["created_date"]  # if date is OK, check else
-        del task["changed_date"]
-        assert task == expected_response
+        del response.data["created_date"]  # if date is OK, check else
+        del response.data["changed_date"]
+        assert response.data == expected_response
+
+    def is_auto_date_time_correct(self, time: str):
+        now = datetime.now()
+        date_to_check = datetime.fromisoformat(time.replace("Z", ""))
+        return now - timedelta(seconds=1) <= date_to_check <= now + timedelta(seconds=1)
 
     def test_update(self):
         task_attributes = self.generate_task_attributes()
         task = self.create(task_attributes)
         new_data = self.generate_task_attributes()
-        updated_attributes = {**task, **new_data}
+        updated_attributes = {**task.data, **new_data}
 
-        expected_response = self.expected_details(task, updated_attributes)
-        response = self.update(new_data, task["id"])
-        assert response == expected_response
+        expected_response = self.expected_details(task.data, updated_attributes)
+        response = self.update(new_data, task.data["id"])
+        assert response.data == expected_response
 
     def test_delete(self):
         task_attributes = self.generate_task_attributes()
         task = self.create(task_attributes)
 
-        response = self.delete(task["id"])
-        expected_response = HTTPStatus.NO_CONTENT
-        assert response == expected_response
+        response = self.delete(task.data["id"])
+        assert response.status_code == HTTPStatus.NO_CONTENT
+        new_response = self.retrieve(task.data["id"])
+        assert new_response.status_code == HTTPStatus.NOT_FOUND
 
     def test_list(self):
         tasks_list = []
         for i in range(5):
             task_attributes = self.generate_task_attributes()
             task = self.create(task_attributes)
-            tasks_list.append(task)
+            tasks_list.append(task.data)
 
         expected_response = tasks_list
         response = self.list()
-        assert response == expected_response
+        assert response.data == expected_response
 
     def test_retrieve(self):
         tasks_list = []
         for i in range(5):
             task_attributes = self.generate_task_attributes()
             task = self.create(task_attributes)
-            tasks_list.append(task)
+            tasks_list.append(task.data)
 
         expected_response = tasks_list[2]
         response = self.retrieve(tasks_list[2]["id"])
-        assert response == expected_response
+        assert response.data == expected_response
