@@ -30,7 +30,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.select_related("tags", "author", "worker").all()
+    queryset = Task.objects.prefetch_related("tags", "author", "worker").all()
     serializer_class = TaskSerializer
     filterset_class = TaskFilter
 
