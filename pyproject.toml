@@ -18,6 +18,7 @@ factory-boy = "^3.3.0"
 [tool.poetry.group.dev.dependencies]
 black = "^23.7.0"
 pytest-django = "^4.5.2"
+freezegun = "^1.2.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

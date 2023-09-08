@@ -13,6 +13,14 @@ class TestUserViewSet(TestViewSetBase):
             "name": fake.user_name(),
         }
 
+    def generate_test_data(self, data_count: int):
+        expected_response = []
+        for _ in range(data_count):
+            tag_attributes = self.generate_tag_attributes()
+            tag = self.create(tag_attributes)
+            expected_response.append(tag.data)
+        return expected_response
+
     @staticmethod
     def expected_details(entity: dict, attributes: dict):
         return {**attributes, "id": entity["id"]}
@@ -45,25 +53,13 @@ class TestUserViewSet(TestViewSetBase):
         assert new_response.status_code == HTTPStatus.NOT_FOUND
 
     def test_list(self):
-        tags_list = []
-        for i in range(5):
-            tag_attributes = self.generate_tag_attributes()
-            tag = self.create(tag_attributes)
-            tags_list.append(tag.data)
-
-        expected_response = tags_list
+        expected_response = self.generate_test_data(5)
         response = self.list()
         assert response.status_code == HTTPStatus.OK
         assert response.data == expected_response
 
     def test_retrieve(self):
-        tags_list = []
-        for i in range(5):
-            tag_attributes = self.generate_tag_attributes()
-            tag = self.create(tag_attributes)
-            tags_list.append(tag.data)
-
-        expected_response = tags_list[2]
-        response = self.retrieve(tags_list[2]["id"])
+        expected_response = self.generate_test_data(1)
+        response = self.retrieve(expected_response[0]["id"])
         assert response.status_code == HTTPStatus.OK
-        assert response.data == expected_response
+        assert response.data == expected_response[0]
