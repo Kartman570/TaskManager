@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class IsStaffOrReadOnly(permissions.BasePermission):
+class IsPermitToDelete(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method != "DELETE":
             return True
