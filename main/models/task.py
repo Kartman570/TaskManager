@@ -24,9 +24,7 @@ class Task(models.Model):
     worker = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="worker", null=True, blank=True
     )
-    tags = models.ForeignKey(
-        Tag, on_delete=models.CASCADE, related_name="tag", null=True, blank=True
-    )
+    tags = models.ManyToManyField(Tag)
 
     def __str__(self):
         return self.name

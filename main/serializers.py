@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
     class Meta:
         model = Task
         fields = (
