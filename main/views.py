@@ -14,14 +14,14 @@ class UserFilter(django_filters.FilterSet):
         fields = ("name",)
 
 
-class TaskViewSet(viewsets.ModelViewSet):
+class TaskFilter(django_filters.FilterSet):
     state = django_filters.CharFilter(lookup_expr="icontains")
-    tags = django_filters.CharFilter(lookup_expr="icontains")
-    worker = django_filters.CharFilter(lookup_expr="icontains")
-    author = django_filters.CharFilter(lookup_expr="icontains")
+    tags = django_filters.CharFilter(field_name='tags__name', lookup_expr="icontains")
+    worker = django_filters.CharFilter(field_name='worker__username', lookup_expr="icontains")
+    author = django_filters.CharFilter(field_name='author__username', lookup_expr="icontains")
 
     class Meta:
-        model = Tag
+        model = Task
         fields = ("state", "tags", "worker", "author")
 
 
@@ -33,8 +33,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.order_by("id")
+    queryset = Task.objects.select_related("tags", "author", "worker").order_by("id")
     serializer_class = TaskSerializer
+    filterset_class = TaskFilter
     permission_classes = [IsPermitToDelete, IsAuthenticated]
 
 
