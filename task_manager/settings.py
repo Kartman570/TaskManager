@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "main",
     "rest_framework",
     "django_filters",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -133,4 +134,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "main.User"
 REST_FRAMEWORK = {
 "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+'DEFAULT_PERMISSION_CLASSES': ("rest_framework.permissions.IsAuthenticated",),
 }

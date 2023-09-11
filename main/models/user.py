@@ -15,5 +15,5 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
     email = models.CharField(max_length=255)
-    date_of_birth = models.DateTimeField(null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=255, null=True, blank=True)
