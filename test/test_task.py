@@ -19,7 +19,7 @@ class TestTaskViewSet(TestViewSetBase):
             "deadline_date": fake.future_datetime().isoformat() + "Z",
             "author": self.user.id,
             "worker": self.user.id,
-            "tags": self.tag.id,
+            "tags": [self.tag.id],
             "state": "New",
             "priority": 1,
         }
