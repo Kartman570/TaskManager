@@ -17,12 +17,14 @@ class Task(models.Model):
     description = models.TextField(blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     changed_date = models.DateTimeField(auto_now_add=True)
-    deadline_date = models.DateTimeField()
+    deadline_date = models.DateTimeField(null=True, blank=True)
     state = models.CharField(max_length=255, choices=State.choices, default=State.NEW)
-    priority = models.IntegerField()
+    priority = models.IntegerField(default=1)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="author")
-    worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name="worker")
-    tags = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name="tag")
+    worker = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="worker", null=True, blank=True
+    )
+    tags = models.ManyToManyField(Tag)
 
     def __str__(self):
         return self.name
