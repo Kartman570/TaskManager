@@ -5,7 +5,7 @@ from http import HTTPStatus
 fake = Faker()
 
 
-class TestUserViewSet(TestViewSetBase):
+class TestTagViewSet(TestViewSetBase):
     basename = "tags"
 
     def generate_tag_attributes(self):

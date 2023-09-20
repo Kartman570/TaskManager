@@ -5,11 +5,10 @@ from http import HTTPStatus
 from freezegun import freeze_time
 
 fake = Faker()
-
-
+frozen_time = str(datetime.now().isoformat() + "Z")
+@freeze_time(frozen_time)
 class TestTaskViewSet(TestViewSetBase):
     basename = "tasks"
-    test_date_time = str(datetime.now().isoformat() + "Z")
 
     def generate_task_attributes(self):
         self.tag = self.create_test_tag()
@@ -28,11 +27,11 @@ class TestTaskViewSet(TestViewSetBase):
     def expected_details(entity: dict, attributes: dict):
         return {**attributes, "id": entity["id"]}
 
-    @freeze_time(test_date_time)
     def test_create(self):
+        global frozen_time
         task_attributes = self.generate_task_attributes()
         response = self.create(task_attributes)
-        date_time = {'created_date': self.test_date_time, 'changed_date': self.test_date_time}
+        date_time = {'created_date': frozen_time, 'changed_date': frozen_time}
         task_attributes.update(date_time)
         expected_response = self.expected_details(response.data, task_attributes)
         assert response.data == expected_response
