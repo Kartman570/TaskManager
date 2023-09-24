@@ -21,5 +21,3 @@ jobs:
           COVERAGE: true
           RAILS_ENV: test
         run: docker compose --file docker-compose.ci.yml run --rm api make test
-      - name: Coveralls Python
-        uses: AndreMiras/coveralls-python-action@v20201129
