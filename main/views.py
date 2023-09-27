@@ -4,6 +4,8 @@ from .serializers import UserSerializer, TaskSerializer, TagSerializer
 import django_filters
 from .permissions import IsPermitToDelete
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import render
+from django.http import HttpResponse
 
 
 class UserFilter(django_filters.FilterSet):
@@ -43,3 +45,9 @@ class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.order_by("id")
     serializer_class = TagSerializer
     permission_classes = [IsPermitToDelete, IsAuthenticated]
+
+#Rollbar test
+def rollbar(request):
+    a = None
+    a.hello() # Creating an error with an invalid line of code
+    return HttpResponse("Hello, world. You're at the pollapp index.")
