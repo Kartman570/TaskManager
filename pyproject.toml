@@ -15,6 +15,7 @@ factory-boy = "^3.3.0"
 djangorestframework-simplejwt = "^5.3.0"
 coveralls = "^3.3.1"
 rollbar = "^0.16.3"
+newrelic = "^9.1.0"
 
 [tool.poetry.dev-dependencies]
 
