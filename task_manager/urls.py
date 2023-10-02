@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 from main.admin import task_manager_admin_site
 from rest_framework import routers, permissions
-from main.views import UserViewSet, TaskViewSet, TagViewSet
+from main.views import UserViewSet, TaskViewSet, TagViewSet, rollbar
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework_simplejwt.views import (
@@ -46,6 +46,7 @@ router.register(r'tasks', TaskViewSet, basename='tasks')
 router.register(r'tags', TagViewSet, basename='tags')
 
 urlpatterns = [
+    path("rollbar/", rollbar),
     path("admin/", task_manager_admin_site.urls),
     path('api/', include(router.urls)),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
