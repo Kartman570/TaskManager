@@ -1,6 +1,6 @@
 from factory import django, PostGenerationMethodCall
 from faker import Faker
-from main.models import User
+from main.models import User, Task
 
 
 class UserFactory(django.DjangoModelFactory):
@@ -9,3 +9,10 @@ class UserFactory(django.DjangoModelFactory):
 
     class Meta:
         model = User
+
+
+class TaskFactory(django.DjangoModelFactory):
+    name = Faker().user_name()
+
+    class Meta:
+        model = Task
