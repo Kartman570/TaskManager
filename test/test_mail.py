@@ -18,10 +18,6 @@ class TestSendEmail(TestViewSetBase):
     def test_send_assign_notification(self, fake_sender: MagicMock) -> None:
         assignee = self.create_user()
         task = TaskFactory.create(worker=assignee, author=assignee)
-        print("\n_____________")
-        print(assignee)
-        print(task)
-        print("\n_____________")
 
         send_assign_notification(task.id)
 
