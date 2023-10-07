@@ -26,6 +26,7 @@ class TestUserViewSet(TestViewSetBase):
     def test_create(self):
         user_attributes = self.generate_user_attributes()
         response = self.create(user_attributes)
+        response.data.pop("avatar_picture")
 
         expected_response = self.expected_details(response.data, user_attributes)
         assert response.data == expected_response

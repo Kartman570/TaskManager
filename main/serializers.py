@@ -2,9 +2,19 @@ from rest_framework import serializers
 from .models import User
 from .models import Task
 from .models import Tag
+from .services.file_validator import FileMaxSizeValidator
+from django.core.validators import FileExtensionValidator
+from django.conf import settings
 
 
 class UserSerializer(serializers.ModelSerializer):
+    avatar_picture = serializers.FileField(
+        required=False,
+        validators=[
+            FileMaxSizeValidator(settings.UPLOAD_MAX_SIZES["avatar_picture"]),
+            FileExtensionValidator(["jpeg", "jpg", "png"]),
+        ]
+    )
     class Meta:
         model = User
         fields = (
@@ -16,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
             "date_of_birth",
             "phone",
             "role",
+            "avatar_picture",
         )
 
 
