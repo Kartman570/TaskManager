@@ -1,6 +1,9 @@
 from test.base import TestViewSetBase
 from faker import Faker
 from http import HTTPStatus
+from test.factory_base import UserFactory
+from django.core.files.uploadedfile import SimpleUploadedFile
+import factory
 
 fake = Faker()
 
@@ -21,12 +24,11 @@ class TestUserViewSet(TestViewSetBase):
 
     @staticmethod
     def expected_details(entity: dict, attributes: dict):
-        return {**attributes, "id": entity["id"]}
+        return {**attributes, "id": entity["id"], "avatar_picture": entity["avatar_picture"]}
 
     def test_create(self):
         user_attributes = self.generate_user_attributes()
         response = self.create(user_attributes)
-        response.data.pop("avatar_picture")
 
         expected_response = self.expected_details(response.data, user_attributes)
         assert response.data == expected_response
@@ -72,3 +74,21 @@ class TestUserViewSet(TestViewSetBase):
         expected_response = users_list[2]
         response = self.retrieve(users_list[2]["id"])
         assert response.data == expected_response
+
+    def test_large_avatar(self) -> None:
+        user_attributes = factory.build(dict, FACTORY_CLASS=UserFactory)
+        user_attributes["avatar_picture"] = SimpleUploadedFile("large.jpg", b"x" * 2 * 1024 * 1024)
+        response = self.create(user_attributes)
+        assert response.status_code == HTTPStatus.BAD_REQUEST
+        assert response.json() == {"avatar_picture": ["Maximum size 1048576 exceeded."]}
+
+    def test_avatar_bad_extension(self) -> None:
+        user_attributes = factory.build(dict, FACTORY_CLASS=UserFactory)
+        user_attributes["avatar_picture"] = SimpleUploadedFile("bad_extension.pdf", b"file_content")
+        response = self.create(user_attributes)
+        assert response.status_code == HTTPStatus.BAD_REQUEST
+        assert response.json() == {
+            "avatar_picture": [
+                "File extension “pdf” is not allowed. Allowed extensions are: jpeg, jpg, png."
+            ]
+        }

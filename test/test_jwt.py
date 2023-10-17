@@ -1,5 +1,5 @@
 from rest_framework.test import APITestCase
-from test.factory_base import UserFactory
+from test.factory_base import JWTFactory
 from django.urls import reverse
 from rest_framework import status
 from freezegun import freeze_time
@@ -13,7 +13,7 @@ class TestJWTAuth(APITestCase):
 
     @staticmethod
     def create_user():
-        return UserFactory.create()
+        return JWTFactory.create()
 
     def token_request(self, username: str = None, password: str = "password"):
         client = self.client_class()
