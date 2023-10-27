@@ -9,6 +9,7 @@ CustomUser = get_user_model()
 
 class PermissionsTests(APITestCase):
     token_url = reverse("token_obtain_pair")
+
     def setUp(self):
         self.user = CustomUser.objects.create_user(
             username="not_staff_user", password="123"
@@ -23,9 +24,11 @@ class PermissionsTests(APITestCase):
     def test_delete_task_staff(self):
         self.client.login(username="staff_user", password="123")
 
-        response = self.client.post(self.token_url, data={"username": "staff_user", "password": "123"})
+        response = self.client.post(
+            self.token_url, data={"username": "staff_user", "password": "123"}
+        )
         JWT_token = response.json()["access"]
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {JWT_token}')
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {JWT_token}")
         response = self.client.delete(f"/api/tasks/{self.task.id}/")
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -35,9 +38,11 @@ class PermissionsTests(APITestCase):
     def test_delete_task_user(self):
         self.client.login(username="not_staff_user", password="123")
 
-        response = self.client.post(self.token_url, data={"username": "not_staff_user", "password": "123"})
+        response = self.client.post(
+            self.token_url, data={"username": "not_staff_user", "password": "123"}
+        )
         JWT_token = response.json()["access"]
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {JWT_token}')
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {JWT_token}")
         response = self.client.delete(f"/api/tasks/{self.task.id}/")
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

@@ -5,7 +5,13 @@ from typing import Union, List
 
 from main.models import User, Tag, Task
 from rest_framework_simplejwt.tokens import RefreshToken
-from factory_base import UserFactory, TaskFactory, TagFactory, JWTFactory, StaffUserFactory
+from factory_base import (
+    UserFactory,
+    TaskFactory,
+    TagFactory,
+    JWTFactory,
+    StaffUserFactory,
+)
 from rest_framework.response import Response
 from typing import Optional
 import factory
@@ -43,32 +49,26 @@ class TestViewSetBase(APITestCase):
         return reverse(f"{cls.basename}-list", args=args)
 
     def create(self, data: dict, args: List[Union[str, int]] = None) -> dict:
-        #self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.JWT_token}')
         self.client.force_authenticate(self.user)
         response = self.client.post(self.list_url(args), data=data)
         return response
 
-
     def update(self, data: dict, id: int = None) -> dict:
-        #self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.JWT_token}')
         self.client.force_authenticate(self.user)
         response = self.client.patch(self.detail_url(id), data=data)
         return response
 
     def delete(self, id: int = None) -> dict:
-        #self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.JWT_token}')
         self.client.force_authenticate(self.user)
         response = self.client.delete(self.detail_url(id))
         return response
 
     def list(self) -> dict:
-        #self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.JWT_token}')
         self.client.force_authenticate(self.user)
         response = self.client.get(self.list_url())
         return response
 
     def retrieve(self, id: int = None):
-        #self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.JWT_token}')
         self.client.force_authenticate(self.user)
         response = self.client.get(self.detail_url(id))
         return response

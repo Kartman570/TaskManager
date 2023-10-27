@@ -13,8 +13,9 @@ class UserSerializer(serializers.ModelSerializer):
         validators=[
             FileMaxSizeValidator(settings.UPLOAD_MAX_SIZES["avatar_picture"]),
             FileExtensionValidator(["jpeg", "jpg", "png"]),
-        ]
+        ],
     )
+
     class Meta:
         model = User
         fields = (
@@ -32,6 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
+
     class Meta:
         model = Task
         fields = (

@@ -30,7 +30,7 @@ class TestTaskViewSet(TestViewSetBase):
         task_attributes = self.create_task_attributes()
 
         response = self.create(task_attributes)
-        date_time = {'created_date': frozen_time, 'changed_date': frozen_time}
+        date_time = {"created_date": frozen_time, "changed_date": frozen_time}
 
         task_attributes.update(date_time)
 

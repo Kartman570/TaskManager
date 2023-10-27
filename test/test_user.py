@@ -16,7 +16,9 @@ class TestUserViewSet(TestViewSetBase):
         return {
             **attributes,
             "id": entity["id"],
-            "avatar_picture": "http://testserver/media/" + attributes["avatar_picture"].name}
+            "avatar_picture": "http://testserver/media/"
+            + attributes["avatar_picture"].name,
+        }
 
     def test_create(self) -> None:
         user_attributes = factory.build(dict, FACTORY_CLASS=UserFactory)
@@ -75,7 +77,9 @@ class TestUserViewSet(TestViewSetBase):
 
     def test_large_avatar(self) -> None:
         user_attributes = factory.build(dict, FACTORY_CLASS=UserFactory)
-        user_attributes["avatar_picture"] = SimpleUploadedFile("large.jpg", b"x" * 2 * 1024 * 1024)
+        user_attributes["avatar_picture"] = SimpleUploadedFile(
+            "large.jpg", b"x" * 2 * 1024 * 1024
+        )
 
         response = self.create(user_attributes)
 
@@ -84,7 +88,9 @@ class TestUserViewSet(TestViewSetBase):
 
     def test_avatar_bad_extension(self) -> None:
         user_attributes = factory.build(dict, FACTORY_CLASS=UserFactory)
-        user_attributes["avatar_picture"] = SimpleUploadedFile("bad_extension.pdf", b"file_content")
+        user_attributes["avatar_picture"] = SimpleUploadedFile(
+            "bad_extension.pdf", b"file_content"
+        )
 
         response = self.create(user_attributes)
 
