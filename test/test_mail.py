@@ -6,7 +6,8 @@ from django.template.loader import render_to_string
 from main.models import Task
 from main.services.mail import send_assign_notification
 from test.base import TestViewSetBase
-from test.factory_base import JWTFactory, TaskFactory
+from test.factory_base import JWTFactory, TaskFactorySimple
+import factory
 
 
 class TestSendEmail(TestViewSetBase):
@@ -17,7 +18,7 @@ class TestSendEmail(TestViewSetBase):
     @patch.object(mail, "send_mail")
     def test_send_assign_notification(self, fake_sender: MagicMock) -> None:
         assignee = self.create_user()
-        task = TaskFactory.create(worker=assignee, author=assignee)
+        task = TaskFactorySimple.create(worker=assignee, author=assignee)
 
         send_assign_notification(task.id)
 

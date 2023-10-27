@@ -3,36 +3,42 @@ from rest_framework.test import APIClient, APITestCase
 from django.urls import reverse
 from typing import Union, List
 
-from main.models import User, Tag
+from main.models import User, Tag, Task
 from rest_framework_simplejwt.tokens import RefreshToken
+from factory_base import (
+    UserFactory,
+    TaskFactory,
+    TagFactory,
+    JWTFactory,
+    StaffUserFactory,
+)
+from rest_framework.response import Response
+from typing import Optional
+import factory
+
 
 class TestViewSetBase(APITestCase):
-    user_attributes = {}
     user: User = None
     client: APIClient = None
-    tag_attributes = {}
-    tag: Tag = None
     basename: str
-    JWT_token = None
+    test_tag: Tag = None
 
     @classmethod
     def setUpTestData(cls) -> None:
         super().setUpTestData()
-        cls.user, cls.JWT_token = cls.create_api_user()
-        cls.user.is_staff = True
-        cls.user.save()
-        cls.client = APIClient()
+        cls.api_client = APIClient()
+        cls.user = cls.create_api_user()
+        cls.test_tag = cls.create_test_tag()
 
     @classmethod
     def create_api_user(cls):
-        user = User.objects.create(**cls.user_attributes)
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        return user, access_token
+        user = factory.build(dict, FACTORY_CLASS=StaffUserFactory)
+        return User.objects.create(**user)
 
     @classmethod
     def create_test_tag(cls):
-        return Tag.objects.create(**cls.tag_attributes)
+        tag_attributes = factory.build(dict, FACTORY_CLASS=TagFactory)
+        return Tag.objects.create(**tag_attributes)
 
     @classmethod
     def detail_url(cls, key: Union[int, str]) -> str:
@@ -43,26 +49,26 @@ class TestViewSetBase(APITestCase):
         return reverse(f"{cls.basename}-list", args=args)
 
     def create(self, data: dict, args: List[Union[str, int]] = None) -> dict:
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.JWT_token}')
+        self.client.force_authenticate(self.user)
         response = self.client.post(self.list_url(args), data=data)
         return response
 
     def update(self, data: dict, id: int = None) -> dict:
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.JWT_token}')
+        self.client.force_authenticate(self.user)
         response = self.client.patch(self.detail_url(id), data=data)
         return response
 
     def delete(self, id: int = None) -> dict:
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.JWT_token}')
+        self.client.force_authenticate(self.user)
         response = self.client.delete(self.detail_url(id))
         return response
 
     def list(self) -> dict:
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.JWT_token}')
+        self.client.force_authenticate(self.user)
         response = self.client.get(self.list_url())
         return response
 
     def retrieve(self, id: int = None):
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.JWT_token}')
+        self.client.force_authenticate(self.user)
         response = self.client.get(self.detail_url(id))
         return response

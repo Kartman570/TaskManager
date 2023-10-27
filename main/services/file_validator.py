@@ -1,6 +1,7 @@
 from django.core.files.base import File
 from django.forms import ValidationError
 
+
 class FileMaxSizeValidator:
     def __init__(self, max_size: int) -> None:
         self.max_size = max_size

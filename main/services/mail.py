@@ -11,7 +11,7 @@ def send_assign_notification(task_id: int) -> None:
         subject="You've assigned a task.",
         template="notification.html",
         context={"task": task},
-        recipients=[assignee.email]
+        recipients=[assignee.email],
     )
 
 
@@ -26,4 +26,3 @@ def send_html_email(
         recipient_list=recipients,
         html_message=html_message,
     )
-
