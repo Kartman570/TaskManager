@@ -3,6 +3,8 @@ from typing import Any, List, TYPE_CHECKING
 
 from rest_framework import routers
 from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.request import Request
 
 
 if TYPE_CHECKING:
