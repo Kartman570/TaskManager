@@ -6,6 +6,7 @@ from .permissions import IsPermitToDelete
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import render
 from django.http import HttpResponse
+from main.services.single_resource import SingleResourceMixin, SingleResourceUpdateMixin
 
 
 class UserFilter(django_filters.FilterSet):
@@ -56,3 +57,13 @@ def rollbar(request):
     a = None
     a.hello()  # Creating an error with an invalid line of code
     return HttpResponse("Hello, world. You're at the pollapp index.")
+
+
+class CurrentUserViewSet(
+    SingleResourceMixin, SingleResourceUpdateMixin, viewsets.ModelViewSet
+):
+    serializer_class = UserSerializer
+    queryset = User.objects.order_by("id")
+
+    def get_object(self) -> User:
+        return cast(User, self.request.user)
