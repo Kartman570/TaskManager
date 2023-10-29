@@ -72,3 +72,24 @@ class TestViewSetBase(APITestCase):
         self.client.force_authenticate(self.user)
         response = self.client.get(self.detail_url(id))
         return response
+
+    def request_single_resource(self, data: dict = None) -> Response:
+        self.client.force_authenticate(self.user)
+        return self.client.get(self.list_url(), data=data)
+
+    def single_resource(self, data: dict = None) -> dict:
+        self.client.force_authenticate(self.user)
+        response = self.request_single_resource(data)
+        assert response.status_code == HTTPStatus.OK
+        return response.data
+
+    def request_patch_single_resource(self, attributes: dict) -> Response:
+        self.client.force_authenticate(self.user)
+        url = self.list_url()
+        return self.client.patch(url, data=attributes)
+
+    def patch_single_resource(self, attributes: dict) -> dict:
+        self.client.force_authenticate(self.user)
+        response = self.request_patch_single_resource(attributes)
+        assert response.status_code == HTTPStatus.OK, response.content
+        return response.data

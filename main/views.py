@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import render
 from django.http import HttpResponse
 from main.services.single_resource import SingleResourceMixin, SingleResourceUpdateMixin
+from typing import cast
 
 
 class UserFilter(django_filters.FilterSet):
