@@ -21,14 +21,12 @@ class TestViewSetBase(APITestCase):
     user: User = None
     client: APIClient = None
     basename: str
-    test_tag: Tag = None
 
     @classmethod
     def setUpTestData(cls) -> None:
         super().setUpTestData()
         cls.api_client = APIClient()
         cls.user = cls.create_api_user()
-        cls.test_tag = cls.create_test_tag()
 
     @classmethod
     def create_api_user(cls):
@@ -36,17 +34,32 @@ class TestViewSetBase(APITestCase):
         return User.objects.create(**user)
 
     @classmethod
-    def create_test_tag(cls):
-        tag_attributes = factory.build(dict, FACTORY_CLASS=TagFactory)
-        return Tag.objects.create(**tag_attributes)
-
-    @classmethod
     def detail_url(cls, key: Union[int, str]) -> str:
-        return reverse(f"{cls.basename}-detail", args=[key])
+        return reverse(f"{cls.basename}-detail", args=key if isinstance(key, list) else [key])
 
     @classmethod
     def list_url(cls, args: List[Union[str, int]] = None) -> str:
         return reverse(f"{cls.basename}-list", args=args)
+
+    def create_test_user(self):
+        user_attributes = factory.build(dict, FACTORY_CLASS=UserFactory)
+        user = User.objects.create(**user_attributes)
+        return user
+
+    def create_test_tag(self):
+        tag_attributes = factory.build(dict, FACTORY_CLASS=TagFactory)
+        tag = Tag.objects.create(**tag_attributes)
+        return tag
+
+    def create_test_task(self, user: User = None):
+        if user is None:
+            user = self.create_test_user()
+        task_attributes = factory.build(dict, FACTORY_CLASS=TaskFactory)
+        task_attributes["author"] = user
+        task_attributes["worker"] = user
+        del task_attributes["tags"]
+        task = Task.objects.create(**task_attributes)
+        return task
 
     def create(self, data: dict, args: List[Union[str, int]] = None) -> dict:
         self.client.force_authenticate(self.user)
@@ -63,14 +76,14 @@ class TestViewSetBase(APITestCase):
         response = self.client.delete(self.detail_url(id))
         return response
 
-    def list(self) -> dict:
+    def list(self, data: dict = None, args: List[Union[str, int]] = None):
         self.client.force_authenticate(self.user)
-        response = self.client.get(self.list_url())
+        response = self.client.get(self.list_url(args), data=data)
         return response
 
-    def retrieve(self, id: int = None):
+    def retrieve(self, key: List[int], data: dict = None):
         self.client.force_authenticate(self.user)
-        response = self.client.get(self.detail_url(id))
+        response = self.client.get(self.detail_url(key), data=data)
         return response
 
     def request_single_resource(self, data: dict = None) -> Response:

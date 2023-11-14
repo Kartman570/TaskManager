@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from main.services.single_resource import SingleResourceMixin, SingleResourceUpdateMixin
 from typing import cast
+from rest_framework_extensions.mixins import NestedViewSetMixin
 
 
 class UserFilter(django_filters.FilterSet):
@@ -68,3 +69,21 @@ class CurrentUserViewSet(
 
     def get_object(self) -> User:
         return cast(User, self.request.user)
+
+
+class UserTasksViewSet(NestedViewSetMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = (
+        Task.objects.order_by("id")
+        .select_related("author", "worker")
+        .prefetch_related("tags")
+    )
+    serializer_class = TaskSerializer
+
+
+class TaskTagsViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = TagSerializer
+
+    def get_queryset(self):
+        task_id = self.kwargs["parent_lookup_task_id"]
+        return Task.objects.get(pk=task_id).tags.all()
+

@@ -13,7 +13,8 @@ class TestTagViewSet(TestViewSetBase):
 
     def generate_test_data(self, data_count: int):
         expected_response = []
-        serializer = TagSerializer(self.test_tag)
+        test_tag = self.create_test_tag()
+        serializer = TagSerializer(test_tag)
         expected_response.append(serializer.data)
         for _ in range(data_count):
             tag_attributes = factory.build(dict, FACTORY_CLASS=TagFactory)

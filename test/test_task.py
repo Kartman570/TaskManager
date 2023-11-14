@@ -22,7 +22,8 @@ class TestTaskViewSet(TestViewSetBase):
         task_attributes = factory.build(dict, FACTORY_CLASS=TaskFactory)
         task_attributes["author"] = self.user.id
         task_attributes["worker"] = self.user.id
-        task_attributes["tags"] = [self.test_tag.id]
+        test_tag = self.create_test_tag()
+        task_attributes["tags"] = [test_tag.id]
         return task_attributes
 
     def test_create(self):
