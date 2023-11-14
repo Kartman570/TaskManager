@@ -18,4 +18,4 @@ class User(AbstractUser):
     email = models.CharField(max_length=255)
     date_of_birth = models.DateField(null=True, blank=True)
     phone = models.CharField(max_length=30, null=True, blank=True)
-    avatar_picture = models.ImageField(null=True, storage=public_storage)
+    avatar_picture = models.ImageField(null=True, blank=True, storage=public_storage)
